@@ -1,0 +1,28 @@
+#loginButton, #registerButton {
+    -fx-background-color:  #57cac3;
+    -fx-padding: 5px;
+    -fx-arc-width: 20;
+    -fx-arc-height: 20;
+    -fx-transition: -fx-background-color 1s;
+}
+
+#loginButton:hover, #registerButton:hover {
+    -fx-background-color:  #15b38b;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+}
+
+#registerOption, #loginOption {
+    -fx-background-color: transparent;
+    -fx-font-size: 11px;
+    -fx-text-fill: #15b38b;
+    -fx-cursor: hand;
+    -fx-transition: -fx-font-size 3s, -fx-translate-x 0.5s;
+}
+
+#registerOption:hover, #loginOption:hover {
+    -fx-text-fill: #15b38b;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-translate-x: -5;
+}

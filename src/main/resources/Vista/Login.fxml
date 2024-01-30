@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.Controller">
+   <left>
+      <AnchorPane fx:id="logoPane" prefHeight="400.0" prefWidth="308.0" style="-fx-background-color: #57cac3;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="79.0" layoutY="107.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/icons8-health-100.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="30.0" layoutY="276.0" prefHeight="54.0" prefWidth="262.0" text="Administrador Hospital" textFill="WHITE">
+               <font>
+                  <Font name="SansSerif Regular" size="24.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
+   </left>
+   <right>
+      <AnchorPane fx:id="loginPane" prefHeight="400.0" prefWidth="302.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+         <children>
+            <TextField layoutX="77.0" layoutY="153.0" promptText="Usuario" style="-fx-background-color: transparent; -fx-border-color: #57cac3; -fx-border-width: 0px 0px 2px 0px;" />
+            <PasswordField layoutX="76.0" layoutY="213.0" promptText="Contraseña" style="-fx-background-color: transparent; -fx-border-color: #57cac3; -fx-border-width: 0px 0px 2px 0px;">
+               <font>
+                  <Font name="SansSerif Regular" size="12.0" />
+               </font></PasswordField>
+            <Button fx:id="loginButton" layoutX="95.0" layoutY="305.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="101.0" stylesheets="@../CSS/login.css" text="Iniciar Sesión" textFill="WHITE">
+
+               <font>
+                  <Font size="15.0" />
+               </font></Button>
+            <ImageView fitHeight="19.0" fitWidth="26.0" layoutX="51.0" layoutY="158.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/user-solid.jpg" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="16.0" fitWidth="18.0" layoutX="51.0" layoutY="218.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/key-solid.jpg" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="78.0" fitWidth="85.0" layoutX="109.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/users-solid.jpg" />
+               </image>
+            </ImageView>
+            <Button fx:id="registerOption" layoutX="112.0" layoutY="259.0" mnemonicParsing="false" onAction="#handleRegisterOption" stylesheets="@../CSS/login.css" text="Registrarse" textFill="#15b38b" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="registerPane" prefHeight="400.0" prefWidth="302.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="62.0" fitWidth="77.0" layoutX="113.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/users-solid.jpg" />
+               </image>
+            </ImageView>
+            <TextField layoutX="76.0" layoutY="128.0" promptText="Nombres" style="-fx-background-color: transparent; -fx-border-color: #57cac3; -fx-border-width: 0px 0px 2px 0px;" />
+            <PasswordField layoutX="76.0" layoutY="207.0" promptText="Contraseña" style="-fx-background-color: transparent; -fx-border-color: #57cac3; -fx-border-width: 0px 0px 2px 0px;" />
+            <TextField layoutX="77.0" layoutY="166.0" promptText="Apellidos" style="-fx-background-color: transparent; -fx-border-color: #57cac3; -fx-border-width: 0px 0px 2px 0px;" />
+            <Button fx:id="loginOption" layoutX="103.0" layoutY="275.0" mnemonicParsing="false" onAction="#handleLoginOption" stylesheets="@../CSS/login.css" text="Iniciar Sesión" />
+            <Button fx:id="registerButton" layoutX="103.0" layoutY="310.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="84.0" stylesheets="@../CSS/login.css" text="Registrarse" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>
