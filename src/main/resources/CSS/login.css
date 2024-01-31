@@ -26,3 +26,13 @@
     -fx-cursor: hand;
     -fx-translate-x: -5;
 }
+
+#myChoiceBoxRegister, myChoiceBoxLogin{
+    -fx-background-color: #57cac380;
+    -fx-cursor: hand;
+}
+
+#errorLabel
+{
+    -fx-padding: 5px;
+}
