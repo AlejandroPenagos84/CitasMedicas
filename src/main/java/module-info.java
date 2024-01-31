@@ -6,6 +6,8 @@ module Vista{
     opens Vista to javafx.fxml;
     exports Vista;
 
-    opens Controlador to javafx.fxml;
-    exports Controlador;
+    exports Controlador.Interfaz;
+    opens Controlador.Interfaz to javafx.fxml;
+    exports Controlador.Logica;
+    opens Controlador.Logica to javafx.fxml;
 }

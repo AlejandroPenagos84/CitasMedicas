@@ -14,7 +14,7 @@ public class Login extends Application  {
         FXMLLoader fxmlLoader = new FXMLLoader(Login.class.getResource("Login.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Login");
+        stage.setTitle("Administrador Hospital");
         stage.setScene(scene);
         stage.show();
     }

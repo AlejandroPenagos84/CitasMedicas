@@ -1,36 +1,31 @@
-package Controlador;
+package Controlador.Interfaz;
 
-import Controlador.DAO.DAO;
-import Modelo.Patient;
-import Modelo.Doctor;
-
+import Controlador.Logica.LoginController;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
-    private DAO conntrolDao;
+public class ControllerInterfaceLogin implements Initializable {
+    private LoginController loginController;
 
-    private Patient patient;
-    private Doctor doctor;
-    public Controller()
-    {
-        conntrolDao = new DAO(this);
-    }
+    public ControllerInterfaceLogin() { loginController = new LoginController();}
 
     @FXML
     private ChoiceBox<String> myChoiceBoxRegister;
@@ -50,7 +45,7 @@ public class Controller implements Initializable {
     @FXML
     private Label errorLabelLogin;
 
-    private String[] tipoDePersonas = {"Paciente","Medico"};
+    private final String[] tipoDePersonas = {"Paciente","Medico"};
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -74,7 +69,7 @@ public class Controller implements Initializable {
     private AnchorPane registerPane;
 
     @FXML
-    public void handleRegisterOption(ActionEvent event) throws IOException {
+    public void handleRegisterOption(ActionEvent event) {
         TranslateTransition translateInformation = new TranslateTransition();
         translateInformation.setNode(mainBorderPane.getRight());
         translateInformation.setDuration(Duration.millis(500));
@@ -82,12 +77,7 @@ public class Controller implements Initializable {
         translateInformation.play();
 
 
-        translateInformation.setOnFinished(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                mainBorderPane.setRight(registerPane);
-            }
-        });
+        translateInformation.setOnFinished(actionEvent -> mainBorderPane.setRight(registerPane));
 
         Translate(mainBorderPane.getLeft(),500,-295);
     }
@@ -134,42 +124,53 @@ public class Controller implements Initializable {
                 || myChoiceBoxLogin.getValue() == null);
     }
 
-    public void Register(ActionEvent event)
-    {
+    public void Register(ActionEvent event) throws IOException {
+        String[]attributes;
         if(VerifyBlancks()) {
             String name = nameRegister.getText();
             String lastName = lastNameRegister.getText();
-            if(conntrolDao.Consultar(myChoiceBoxRegister.getValue(),name,lastName) == null)
-                conntrolDao.initial_insertion(myChoiceBoxRegister.getValue(), name, lastName, GenerateUser(name, lastName), passwordRegister.getText());
+
+            attributes = new String[]{
+                    myChoiceBoxRegister.getValue(),name,lastName, GenerateUser(name, lastName),
+                    passwordRegister.getText()
+            };
+
+            if(loginController.verify_user_existence(attributes))
+            {
+                loginController.register_user(attributes);
+                switch_scene(event);
+            }
             else
                 errorLabel.setVisible(true);
-            Whiten();
+            whiten_register();
         }else
             textFieldErrorLabel.setVisible(true);
     }
 
-    public void Login(ActionEvent event)
-    {
-        if(VerifyBlancksLogin()) {
-
-            if(myChoiceBoxLogin.getValue().equals("Paciente"))
-            {
-                conntrolDao.read_for_login(myChoiceBoxLogin.getValue(),userLogin.getText(),passwordLogin.getText());
-                if(patient != null)
-                    System.out.println("YUPI");
-                else
-                    errorLabelLogin.setVisible(true);
-            }else {
-                if(doctor != null)
-                    System.out.println("YUPI");
-                else
-                    errorLabelLogin.setVisible(true);
-            }
-            Whiten();
+    public void Login(ActionEvent event) throws IOException {
+        if(VerifyBlancksLogin())
+        {
+            String[]attributes;
+            attributes = new String[] {
+                    myChoiceBoxLogin.getValue(),
+                    userLogin.getText(),passwordLogin.getText()
+            };
+            if(loginController.login_user(attributes) != null)
+                switch_scene(event);
+            else
+                errorLabelLogin.setVisible(true);
+            whiten_login();
         }else
-            textFieldErrorLabel.setVisible(true);
+            errorTexFieldLabelLogin.setVisible(true);
     }
 
+    private void switch_scene(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/Vista/Sample.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
     private String GenerateUser(String name, String lastName)
     {
         String user = null;
@@ -188,7 +189,7 @@ public class Controller implements Initializable {
         return user;
     }
 
-    private void Whiten()
+    private void whiten_register()
     {
         nameRegister.setText("");
         lastNameRegister.setText("");
@@ -196,27 +197,10 @@ public class Controller implements Initializable {
         myChoiceBoxRegister.setValue("");
     }
 
-    public Patient createPatient(String name, String lastName, int age, String gender, String ID_number, String user, String password){
-        patient = new Patient();
-        patient.setName(name);
-        patient.setLastName(lastName);
-        patient.setAge(age);
-        patient.setUser(user);
-        patient.setPassword(password);
-        patient.setGender(gender);
-        patient.setID_number(ID_number);;
-        return patient;
-    }
-
-    public Doctor createDoctor(String name, String lastName, String specialty, String word_schedule, String ID_number, String user, String password){
-        doctor = new Doctor();
-        doctor.setName(name);
-        doctor.setLastName(lastName);
-        doctor.setSpecialty(specialty);
-        doctor.setWork_Schedule(word_schedule);
-        doctor.setID_number(ID_number);
-        doctor.setUser(user);
-        doctor.setPassword(password);
-        return doctor;
+    private void whiten_login()
+    {
+        userLogin.setText("");
+        passwordLogin.setText("");
+        myChoiceBoxLogin.setValue("");
     }
 }

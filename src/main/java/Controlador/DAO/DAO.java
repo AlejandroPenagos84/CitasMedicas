@@ -1,26 +1,13 @@
 package Controlador.DAO;
-import Controlador.Controller;
+import Controlador.Interfaz.ControllerInterfaceLogin;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class DAO {
-    private Connection con;
-    private Statement st;
-    private ResultSet rs;
-    private Controller logicControl;
-
-    public DAO(Controller logicControl)
-    {
-        con = null;
-        st = null;
-        rs = null;
-        this.logicControl = logicControl;
-    }
-
     public void initial_insertion(String objeto, String nombre, String apellido, String user, String password) {
-        String consultaSQL = "INSERT INTO " + determinarTablaPersona(objeto) +
+        String consultaSQL = "INSERT INTO " + determinate_table_person(objeto) +
                 " (Nombres"+objeto+", Apellidos"+objeto+", User"+objeto+", Password"+objeto+") VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = Conexion.getConexion().prepareStatement(consultaSQL)) {
@@ -37,19 +24,17 @@ public class DAO {
         }
     }
 
-    public String Consultar(String objeto, String nombre, String apellido)
+    public String read_for_register(String objeto, String nombre, String apellido)
     {
-        String consultaSQL = "SELECT * FROM " + determinarTablaPersona(objeto) +
+        String consultaSQL = "SELECT * FROM " + determinate_table_person(objeto) +
                 " WHERE Nombres"+objeto+" = ? AND Apellidos"+objeto+" = ?";
-
-        System.out.println(consultaSQL);
 
         String user = null;
         try (PreparedStatement pstmt = Conexion.getConexion().prepareStatement(consultaSQL)) {
             pstmt.setString(1, nombre);
             pstmt.setString(2, apellido);
 
-            rs = pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
 
             if(rs.next())
                 user = rs.getString("Nombres"+objeto)+rs.getString("Apellidos"+objeto);
@@ -60,87 +45,59 @@ public class DAO {
         return user;
     }
 
-    public void read_for_login(String object, String user, String password)
+    public String[] read_for_login(String object, String user, String password)
     {
-        String consultaSQL = "SELECT * FROM " + determinarTablaPersona(object) +
+        String consultaSQL = "SELECT * FROM " + determinate_table_person(object) +
                 " WHERE User"+object+" = ? AND Password"+object+" = ?";
 
+        String[]person = null;
         try (PreparedStatement pstmt = Conexion.getConexion().prepareStatement(consultaSQL)) {
             pstmt.setString(1, user);
-            pstmt.setString(2, password);
+            pstmt.setString(2, doHashPassword(password));
 
-            rs = pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
 
             if(rs.next())
             {
                 if(object.equals("Paciente"))
-                    getPatient(rs,password);
+                    person = getPatient(rs,password);
                 else
-                    getDoctor(rs,password);
+                    person = getDoctor(rs,password);
             }
             Conexion.disconnect();
         } catch (SQLException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        return person;
     }
 
-    private void getPatient(ResultSet rs, String password) throws SQLException, NoSuchAlgorithmException {
-        if(VerifyPassword(rs.getString("PasswordPaciente"),password))
-        {
-            logicControl.createPatient(
+    private String[] getPatient(ResultSet rs, String password) throws SQLException, NoSuchAlgorithmException {
+        String[]attributes = null;
+            attributes= new String[]{
                     rs.getString("NombresPaciente"),
                     rs.getString("ApellidosPaciente"),
-                    rs.getInt("EdadPaciente"),
+                    String.valueOf(rs.getInt("EdadPaciente")),
                     rs.getString("UserPaciente"),
                     rs.getString("PasswordPaciente"),
                     rs.getString("GeneroPaciente"),
-                    rs.getString("NumIdentificacionPaciente")
-            );
-        }else{
-            logicControl.createPatient(
-                    null,
-                    null,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null
-            );
-        }
+                    rs.getString("NumIdentificacionPaciente")};
+        return attributes;
     }
 
-    private void getDoctor(ResultSet rs, String password) throws SQLException, NoSuchAlgorithmException {
-        if(VerifyPassword(rs.getString("PasswordMedico"),password))
-        {
-            logicControl.createDoctor(
+    private String[] getDoctor(ResultSet rs, String password) throws SQLException, NoSuchAlgorithmException {
+        String[]attributes = null;
+        attributes= new String[]{
                     rs.getString("NombresMedico"),
                     rs.getString("ApellidosMedico"),
                     rs.getString("EspecialidadMedico"),
                     rs.getString("HorarioMedico"),
                     rs.getString("NumeroIdentificacionMedico"),
                     rs.getString("UserMedico"),
-                    rs.getString("PasswordMedico")
-            );
-        }else{
-                logicControl.createDoctor(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            );
-        }
+                    rs.getString("PasswordMedico")};
+        return attributes;
     }
-    private String determinarTablaPersona(String nombreObjeto)
-    {
-        return nombreObjeto.equals("Paciente") ? "pacientes":"medicos";
-    }
+    private String determinate_table_person(String nombreObjeto) {return nombreObjeto.equals("Paciente") ? "pacientes":"medicos";}
 
-    private boolean VerifyPassword(String password_db,  String password) throws NoSuchAlgorithmException {
-        return doHashPassword(password).equals(password_db);
-    }
     private static String doHashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         messageDigest.update(password.getBytes());
@@ -154,6 +111,4 @@ public class DAO {
 
         return sb.toString();
     }
-
-
 }
